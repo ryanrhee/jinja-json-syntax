@@ -2,6 +2,7 @@
     "name": "jinja-json-syntax",
     "displayName": "jinja-json-syntax",
     "description": "Jinja with JSON syntax file",
+    "license": "MIT",
     "repository": {
         "type": "git",
         "url": "https://github.com/ryanrhee/jinja-json-syntax"
