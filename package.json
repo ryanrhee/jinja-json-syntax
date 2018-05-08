@@ -1,0 +1,26 @@
+{
+    "name": "jinja-json-syntax",
+    "displayName": "jinja-json-syntax",
+    "description": "Jinja with JSON syntax file",
+    "version": "0.0.1",
+    "publisher": "ryanrhee",
+    "engines": {
+        "vscode": "^1.23.0"
+    },
+    "categories": [
+        "Languages"
+    ],
+    "contributes": {
+        "languages": [{
+            "id": "jinjajson",
+            "aliases": ["Jinja JSON", "jinjajson"],
+            "extensions": [".json"],
+            "configuration": "./language-configuration.json"
+        }],
+        "grammars": [{
+            "language": "jinjajson",
+            "scopeName": "text.json.jinja",
+            "path": "./syntaxes/jinjajson.tmLanguage.json"
+        }]
+    }
+}

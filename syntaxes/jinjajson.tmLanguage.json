@@ -1,0 +1,562 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Jinja JSON",
+	"keyEquivalent": "^~J",
+	"foldingStartMarker": "(?x)       # turn on extended mode\n  ^        # a line beginning with\n  \\s*      # some optional space\n  [{\\[]    # the start of an object or array\n  (?!      # but not followed by\n    .*     # whatever\n    [}\\]]  # and the close of an object or array\n    ,?     # an optional comma\n    \\s*    # some optional space\n    $      # at the end of the line\n  )\n  |        # ...or...\n  [{\\[]    # the start of an object or array\n  \\s*      # some optional space\n  $        # at the end of the line",
+	"foldingStopMarker": "(?x)     # turn on extended mode\n  ^      # a line beginning with\n  \\s*    # some optional space\n  [}\\]]  # and the close of an object or array",
+	"patterns": [
+		{
+			"include": "#jinja_block"
+		},
+		{
+			"include": "#json_value"
+		}
+	],
+	"repository": {
+		"jinja_block": {
+			"patterns": [
+				{
+					"include": "#raw_block"
+				},
+				{
+					"include": "#comment_block"
+				},
+				{
+					"include": "#variable"
+				},
+				{
+					"include": "#tag"
+				}
+			]
+		},
+		"raw_block": {
+			"begin": "({%)\\s*(raw)\\s*(%})",
+			"captures": {
+				"1": {
+					"name": "entity.other.jinja.delimiter.tag"
+				},
+				"2": {
+					"name": "keyword.control.jinja"
+				},
+				"3": {
+					"name": "entity.other.jinja.delimiter.tag"
+				}
+			},
+			"end": "({%)\\s*(endraw)\\s*(%})",
+			"name": "comment.block.jinja.raw"
+		},
+		"comment_block": {
+			"begin": "{#-?",
+			"captures": [
+				{
+					"name": "entity.other.jinja.delimiter.comment"
+				}
+			],
+			"end": "-?#}",
+			"name": "comment.block.jinja"
+		},
+		"variable": {
+			"begin": "{{-?",
+			"captures": [
+				{
+					"name": "entity.other.jinja.delimiter.variable"
+				}
+			],
+			"end": "-?}}",
+			"name": "meta.scope.jinja.variable",
+			"patterns": [
+				{
+					"include": "#expression"
+				}
+			]
+		},
+		"tag": {
+			"begin": "{%-?",
+			"captures": [
+				{
+					"name": "entity.other.jinja.delimiter.tag"
+				}
+			],
+			"end": "-?%}",
+			"name": "meta.scope.jinja.tag",
+			"patterns": [
+				{
+					"include": "#expression"
+				}
+			]
+		},
+		"escaped_char": {
+			"match": "\\\\x[0-9A-F]{2}",
+			"name": "constant.character.escape.hex.jinja"
+		},
+		"escaped_unicode_char": {
+			"captures": {
+				"1": {
+					"name": "constant.character.escape.unicode.16-bit-hex.jinja"
+				},
+				"2": {
+					"name": "constant.character.escape.unicode.32-bit-hex.jinja"
+				},
+				"3": {
+					"name": "constant.character.escape.unicode.name.jinja"
+				}
+			},
+			"match": "(\\\\U[0-9A-Fa-f]{8})|(\\\\u[0-9A-Fa-f]{4})|(\\\\N\\{[a-zA-Z ]+\\})"
+		},
+		"expression": {
+			"patterns": [
+				{
+					"captures": {
+						"1": {
+							"name": "keyword.control.jinja"
+						},
+						"2": {
+							"name": "variable.other.jinja.block"
+						}
+					},
+					"match": "\\s*\\b(block)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\b"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "keyword.control.jinja"
+						},
+						"2": {
+							"name": "variable.other.jinja.filter"
+						}
+					},
+					"match": "\\s*\\b(filter)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\b"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "keyword.control.jinja"
+						},
+						"2": {
+							"name": "variable.other.jinja.test"
+						}
+					},
+					"match": "\\s*\\b(is)\\s+([a-zA-Z_][a-zA-Z0-9_]*)\\b"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "keyword.control.jinja"
+						}
+					},
+					"match": "(?<=\\{\\%-|\\{\\%)\\s*\\b([a-zA-Z_][a-zA-Z0-9_]*)\\b(?!\\s*[,=])"
+				},
+				{
+					"match": "\\b(and|else|if|in|import|not|or|recursive|with(out)?\\s+context)\\b",
+					"name": "keyword.control.jinja"
+				},
+				{
+					"match": "\\b(true|false|none)\\b",
+					"name": "constant.language.jinja"
+				},
+				{
+					"match": "\\b(loop|super|self|varargs|kwargs)\\b",
+					"name": "variable.language.jinja"
+				},
+				{
+					"match": "[a-zA-Z_][a-zA-Z0-9_]*",
+					"name": "variable.other.jinja"
+				},
+				{
+					"match": "(\\+|\\-|\\*\\*|\\*|\/\/|\/|%)",
+					"name": "keyword.operator.arithmetic.jinja"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "punctuation.other.jinja"
+						},
+						"2": {
+							"name": "variable.other.jinja.filter"
+						}
+					},
+					"match": "(\\|)([a-zA-Z_][a-zA-Z0-9_]*)"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "punctuation.other.jinja"
+						},
+						"2": {
+							"name": "variable.other.jinja.attribute"
+						}
+					},
+					"match": "(\\.)([a-zA-Z_][a-zA-Z0-9_]*)"
+				},
+				{
+					"begin": "\\[",
+					"captures": [
+						{
+							"name": "punctuation.other.jinja"
+						}
+					],
+					"end": "\\]",
+					"patterns": [
+						{
+							"include": "#expression"
+						}
+					]
+				},
+				{
+					"begin": "\\(",
+					"captures": [
+						{
+							"name": "punctuation.other.jinja"
+						}
+					],
+					"end": "\\)",
+					"patterns": [
+						{
+							"include": "#expression"
+						}
+					]
+				},
+				{
+					"begin": "\\{",
+					"captures": [
+						{
+							"name": "punctuation.other.jinja"
+						}
+					],
+					"end": "\\}",
+					"patterns": [
+						{
+							"include": "#expression"
+						}
+					]
+				},
+				{
+					"match": "(\\.|:|\\||,)",
+					"name": "punctuation.other.jinja"
+				},
+				{
+					"match": "(==|<=|=>|<|>|!=)",
+					"name": "keyword.operator.comparison.jinja"
+				},
+				{
+					"match": "=",
+					"name": "keyword.operator.assignment.jinja"
+				},
+				{
+					"begin": "\"",
+					"beginCaptures": [
+						{
+							"name": "punctuation.definition.string.begin.jinja"
+						}
+					],
+					"end": "\"",
+					"endCaptures": [
+						{
+							"name": "punctuation.definition.string.end.jinja"
+						}
+					],
+					"name": "string.quoted.double.jinja",
+					"patterns": [
+						{
+							"include": "#string"
+						}
+					]
+				},
+				{
+					"begin": "'",
+					"beginCaptures": [
+						{
+							"name": "punctuation.definition.string.begin.jinja"
+						}
+					],
+					"end": "'",
+					"endCaptures": [
+						{
+							"name": "punctuation.definition.string.end.jinja"
+						}
+					],
+					"name": "string.quoted.single.jinja",
+					"patterns": [
+						{
+							"include": "#string"
+						}
+					]
+				},
+				{
+					"begin": "@\/",
+					"beginCaptures": [
+						{
+							"name": "punctuation.definition.regexp.begin.jinja"
+						}
+					],
+					"end": "\/",
+					"endCaptures": [
+						{
+							"name": "punctuation.definition.regexp.end.jinja"
+						}
+					],
+					"name": "string.regexp.jinja",
+					"patterns": [
+						{
+							"include": "#simple_escapes"
+						}
+					]
+				}
+			]
+		},
+		"simple_escapes": {
+			"captures": {
+				"1": {
+					"name": "constant.character.escape.newline.jinja"
+				},
+				"10": {
+					"name": "constant.character.escape.tab.jinja"
+				},
+				"11": {
+					"name": "constant.character.escape.vertical-tab.jinja"
+				},
+				"2": {
+					"name": "constant.character.escape.backlash.jinja"
+				},
+				"3": {
+					"name": "constant.character.escape.double-quote.jinja"
+				},
+				"4": {
+					"name": "constant.character.escape.single-quote.jinja"
+				},
+				"5": {
+					"name": "constant.character.escape.bell.jinja"
+				},
+				"6": {
+					"name": "constant.character.escape.backspace.jinja"
+				},
+				"7": {
+					"name": "constant.character.escape.formfeed.jinja"
+				},
+				"8": {
+					"name": "constant.character.escape.linefeed.jinja"
+				},
+				"9": {
+					"name": "constant.character.escape.return.jinja"
+				}
+			},
+			"match": "(\\\\\\n)|(\\\\\\\\)|(\\\\\\\")|(\\\\')|(\\\\a)|(\\\\b)|(\\\\f)|(\\\\n)|(\\\\r)|(\\\\t)|(\\\\v)"
+		},
+		"string": {
+			"patterns": [
+				{
+					"include": "#simple_escapes"
+				},
+				{
+					"include": "#escaped_char"
+				},
+				{
+					"include": "#escaped_unicode_char"
+				}
+			]
+		},
+		"json_array": {
+			"begin": "\\[",
+			"beginCaptures": [
+				{
+					"name": "punctuation.definition.array.begin.json"
+				}
+			],
+			"end": "\\]",
+			"endCaptures": [
+				{
+					"name": "punctuation.definition.array.end.json"
+				}
+			],
+			"name": "meta.structure.array.json",
+			"patterns": [
+				{
+					"include": "#json_value"
+				},
+				{
+					"match": ",",
+					"name": "punctuation.separator.array.json"
+				},
+				{
+					"match": "[^\\s\\]]",
+					"name": "invalid.illegal.expected-array-separator.json"
+				}
+			]
+		},
+		"json_comments": {
+			"patterns": [
+				{
+					"begin": "\/\\*\\*(?!\/)",
+					"captures": [
+						{
+							"name": "punctuation.definition.comment.json"
+						}
+					],
+					"end": "\\*\/",
+					"name": "comment.block.documentation.json"
+				},
+				{
+					"begin": "\/\\*",
+					"captures": [
+						{
+							"name": "punctuation.definition.comment.json"
+						}
+					],
+					"end": "\\*\/",
+					"name": "comment.block.json"
+				},
+				{
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.comment.json"
+						}
+					},
+					"match": "(\/\/).*$\\n?",
+					"name": "comment.line.double-slash.js"
+				}
+			]
+		},
+		"json_constant": {
+			"match": "\\b(?:true|false|null)\\b",
+			"name": "constant.language.json"
+		},
+		"json_number": {
+			"match": "(?x)        # turn on extended mode\n  -?        # an optional minus\n  (?:\n    0       # a zero\n    |       # ...or...\n    [1-9]   # a 1-9 character\n    \\d*     # followed by zero or more digits\n  )\n  (?:\n    (?:\n      \\.    # a period\n      \\d+   # followed by one or more digits\n    )?\n    (?:\n      [eE]  # an e character\n      [+-]? # followed by an option +\/-\n      \\d+   # followed by one or more digits\n    )?      # make exponent optional\n  )?        # make decimal portion optional",
+			"name": "constant.numeric.json"
+		},
+		"json_object": {
+			"begin": "\\{",
+			"beginCaptures": [
+				{
+					"name": "punctuation.definition.dictionary.begin.json"
+				}
+			],
+			"end": "\\}",
+			"endCaptures": [
+				{
+					"name": "punctuation.definition.dictionary.end.json"
+				}
+			],
+			"name": "meta.structure.dictionary.json",
+			"patterns": [
+				{
+					"include": "#jinja_block"
+				},
+				{
+					"comment": "the JSON object key",
+					"include": "#json_objectkey"
+				},
+				{
+					"include": "#json_comments"
+				},
+				{
+					"begin": ":",
+					"beginCaptures": [
+						{
+							"name": "punctuation.separator.dictionary.key-value.json"
+						}
+					],
+					"end": "(,)|(?=\\})",
+					"endCaptures": {
+						"1": {
+							"name": "punctuation.separator.dictionary.pair.json"
+						}
+					},
+					"name": "meta.structure.dictionary.value.json",
+					"patterns": [
+						{
+							"comment": "the JSON object value",
+							"include": "#json_value"
+						},
+						{
+							"match": "[^\\s,]",
+							"name": "invalid.illegal.expected-dictionary-separator.json"
+						}
+					]
+				},
+				{
+					"match": "[^\\s\\}]",
+					"name": "invalid.illegal.expected-dictionary-separator.json"
+				}
+			]
+		},
+		"json_string": {
+			"begin": "\"",
+			"beginCaptures": [
+				{
+					"name": "punctuation.definition.string.begin.json"
+				}
+			],
+			"end": "\"",
+			"endCaptures": [
+				{
+					"name": "punctuation.definition.string.end.json"
+				}
+			],
+			"name": "string.quoted.double.json",
+			"patterns": [
+				{
+					"include": "#json_stringcontent"
+				}
+			]
+		},
+		"json_objectkey": {
+			"begin": "\"",
+			"beginCaptures": [
+				{
+					"name": "punctuation.support.type.property-name.begin.json"
+				}
+			],
+			"end": "\"",
+			"endCaptures": [
+				{
+					"name": "punctuation.support.type.property-name.end.json"
+				}
+			],
+			"name": "string.json support.type.property-name.json",
+			"patterns": [
+				{
+					"include": "#json_stringcontent"
+				}
+			]
+		},
+		"json_stringcontent": {
+			"patterns": [
+				{
+					"match": "(?x)                # turn on extended mode\n  \\\\                # a literal backslash\n  (?:               # ...followed by...\n    [\"\\\\\/bfnrt]     # one of these characters\n    |               # ...or...\n    u               # a u\n    [0-9a-fA-F]{4}) # and four hex digits",
+					"name": "constant.character.escape.json"
+				},
+				{
+					"match": "\\\\.",
+					"name": "invalid.illegal.unrecognized-string-escape.json"
+				}
+			]
+		},
+		"json_value": {
+			"patterns": [
+				{
+					"include": "#jinja_block"
+				},
+				{
+					"include": "#json_constant"
+				},
+				{
+					"include": "#json_number"
+				},
+				{
+					"include": "#json_string"
+				},
+				{
+					"include": "#json_array"
+				},
+				{
+					"include": "#json_object"
+				},
+				{
+					"include": "#json_comments"
+				}
+			]
+		}
+	},
+	"scopeName": "text.json.jinja"
+}
