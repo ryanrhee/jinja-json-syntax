@@ -6,7 +6,7 @@
         "type": "git",
         "url": "https://github.com/ryanrhee/jinja-json-syntax"
     },
-    "version": "0.0.1",
+    "version": "0.0.2",
     "publisher": "ryanrhee",
     "engines": {
         "vscode": "^1.0.0"
@@ -15,16 +15,25 @@
         "Languages"
     ],
     "contributes": {
-        "languages": [{
-            "id": "jinjajson",
-            "aliases": ["Jinja JSON", "jinjajson"],
-            "extensions": [".json"],
-            "configuration": "./language-configuration.json"
-        }],
-        "grammars": [{
-            "language": "jinjajson",
-            "scopeName": "text.json.jinja",
-            "path": "./syntaxes/jinjajson.tmLanguage.json"
-        }]
+        "languages": [
+            {
+                "id": "jinjajson",
+                "aliases": [
+                    "Jinja JSON",
+                    "jinjajson"
+                ],
+                "extensions": [
+                    ".json"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "jinjajson",
+                "scopeName": "text.json.jinja",
+                "path": "./syntaxes/jinjajson.tmLanguage.json"
+            }
+        ]
     }
 }
